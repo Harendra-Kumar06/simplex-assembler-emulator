@@ -1,0 +1,10 @@
+Errors encountered during assembly:
+Line 4 : Fault: Duplicate identifier found
+Line 5 : Fault: Undefined symbol used
+Line 6 : Fault: Format error in Octal
+Line 7 : Fault: Required operand missing
+Line 8 : Fault: Instruction does not take operands
+Line 9 : Fault: Illegal comma in operand
+Line 10 : Fault: Invalid label syntax
+Line 11 : Fault: Unrecognized mnemonic
+Line 12 : Fault: Unrecognized mnemonic

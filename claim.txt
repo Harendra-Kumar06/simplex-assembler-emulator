@@ -1,0 +1,120 @@
+/*************************************************************************************************
+
+TITLE: Project Claims and Documentation
+AUTHOR: 
+Name     - Harendra Kumar
+Roll No  - 2401CS61
+Email-ID - harendra_2401cs61@iitp.ac.in
+
+Declaration of Authorship:
+This claim.txt file is part of the CS2206 (Computer Architecture) mini-project
+at the Department of Computer Science and Engineering, IIT Patna.
+
+*************************************************************************************************/
+
+All submitted source files (asm.cpp, emu.cpp) and this documentation include my name and student credentials at the start, fulfilling the authorship declaration requirements.
+
+COMPILATION & EXECUTION:
+The programs were developed using standard C++ practices and compiled with the 
+g++ compiler. No warnings or errors are present in the final submission.
+
+1. Assembler:
+   (Note: Input file <filename>.asm must be in the working directory)
+   (i)  g++ asm.cpp -o asm
+   (ii) ./asm file_name.asm
+
+2. Emulator:
+   (Note: Requires the .o binary produced by the assembler)
+   (i)  g++ emu.cpp -o emu
+   (ii) ./emu -t file_name.o
+
+
+===============================
+SYSTEM ARCHITECTURE & FEATURES:
+===============================
+
+1. The Assembler (asm.cpp):
+    - Two-Pass Architecture:
+        . Pass 1: Performs syntax analysis, strips comments, validates label naming, and populates the symbol_map with PC addresses.
+        . Pass 2: Resolves operands, calculates PC-relative offsets for branch instructions (call, brz, brlz, br), and generates machine code.
+    - Data Structures: Uses std::map for the Instruction Set Architecture (ISA) lookup, symbol mapping, and an error registry to track faults by line number.
+    - Error Detection: Successfully detects:
+        . Duplicate labels, Invalid label syntax (non-alphanumeric), Unrecognized mnemonics, Missing or extra operands, Undefined symbols.
+    - Output Files: Generates a machine-readable object file (.o), an advanced listing file (.lst) showing addresses and hex code, and a comprehensive log file (.log).
+    - Can implements partially the instruction SET.
+
+2. The Emulator (emu.cpp):
+    - Memory Management: Simulates a 10,000-word memory system and standard registers (A, B, PC, SP).
+    - Execution Engine: Implements the full range of instructions, including arithmetic, stack operations, and branch logic.
+    - Interactive Flags: 
+        . -t: Provides a full execution trace.
+        . -b: Produces a memory dump before execution.
+        . -a: Executes the program and produces a memory dump after execution.
+        . -ISA: Displays the supported instruction set.
+    - Safety Features: Detects stack overflows, infinite loop traps (branch to self), and unrecognized opcodes.
+
+
+
+===============================
+Testing:
+===============================
+
+I have tested five example programs provided by the course instructor and two additional test cases created by me.
+
+The remaining test cases were executed without any detected errors and produced three output files for each example:
+a listing file, an error log file (if any error or warning was present), and a machine-readable object file.
+
+1) Test 1: Labels and Offsets (test1.asm)
+    - Assembly: Successful with one warning.
+    - Warning: "Warning: Unused label 'label' detected."
+    - Emulator: Correctly identified the infinite loop at `br loop`. 
+    - Verification: Confirmed that `br next` with a zero-distance offset 
+      assembles correctly into the machine word.
+
+2) Test 2: Error Robustness (test2.asm)
+    - Assembly: Correctly failed. The error log captured:
+      * Duplicate label definitions for 'label'.
+      * Undefined symbol error for 'nonesuch'.
+      * Syntax error for invalid hex '08ge'.
+      * Missing operand for 'ldc' and unexpected operand for 'add'.
+      * Illegal label naming starting with a digit ('0def').
+    - Emulator: Execution prevented due to lack of object file.
+
+3) Test 3: Directive Logic (test3.asm)
+    - Assembly: Successful.
+    - Verification: Confirmed 'SET' allows symbolic constants to be used as 
+      operands for 'ldc' and 'adc'. The values 75 and 66 were replaced 
+      during the encoding phase.
+
+4) Test 4: Recursion and Stack (test4.asm)
+    - Assembly: Successful.
+    - Execution: Simulated a complex mathematical function involving 
+      nested `call` and `return` statements.
+    - Verification: High-stress test for the Stack Pointer (SP). Verified 
+      that the emulator correctly manages return addresses on the stack 
+      and restores the PC after each function call.
+
+5) Bubble Sort Algorithm (bubble_sort.asm)
+    - Assembly: Successful. Labels for 'outerLoop', 'innerLoop', 'swap', 
+      and 'noSwap' were resolved correctly.
+    - Execution: Correctly sorted the 5-element array {54, 12, 89, 3, 22}. 
+      The final memory state shows the array in ascending order.
+    - Key Feature: Verified proper use of `stnl` and `ldnl` for array indexing.
+
+6) Sum of First N Natural Numbers (sum_n.asm)
+    - Assembly: Successful.
+    - Execution: Calculated the sum of numbers 1 through 5.
+    - Result: Register A finalized at 15 (0x0F) after exactly 5 iterations. 
+      Verified branching logic (`brlz` and `br`).
+
+7) First K Elements Sum (first_k_elements_sum.asm)
+    - Assembly: Successful.
+    - Execution: Summed the first 3 elements of the array {54, 12, 89}.
+    - Result: Final sum 155 (0x9B) stored in SP[2]. Verified that the 
+      pointer increment (`adc 1`) correctly navigated memory addresses.
+
+8) GCD via Euclidean Subtraction (gcd.asm)
+    - Assembly: Successful.
+    - Execution: Calculated GCD of 24 and 18.
+    - Result: Final GCD of 6 (0x06) was stored in the 'result' data label. 
+      Verified complex label jumping and register-to-memory synchronization.
